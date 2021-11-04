@@ -1,0 +1,18 @@
+{
+  "name": "cypress-test-proj",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "run": "cypress run",
+    "open": "cypress open",
+    "gsi": "cypress run --spec .\\cypress\\integration\\examples\\gsi-3.0.spec.js",
+    "combo": "cypress run --spec .\\cypress\\integration\\examples\\get-combo.spec.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "cypress": "^8.6.0"
+  }
+}
