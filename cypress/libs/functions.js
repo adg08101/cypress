@@ -1,4 +1,6 @@
 export class MagicFunctions {
+    obj = null
+
     selector_type = {
         CLASS: "class",
         ID: "id",
@@ -54,11 +56,9 @@ export class MagicFunctions {
     
     get_any(GET_OBJ, TYPE_OBJ) {
         if (TYPE_OBJ) {
-            console.log(TYPE_OBJ)
             cy.get(`[${TYPE_OBJ.attibute}=${TYPE_OBJ.value}]`).type(`${TYPE_OBJ.data}` + '{' + TYPE_OBJ.key + '}')
             return
         } else if (GET_OBJ) {
-            console.log(GET_OBJ)
             switch (GET_OBJ.action) {
                 case this.action.CHECK:
                     if (GET_OBJ.selector == this.selector_type.CONTAINS
@@ -99,5 +99,70 @@ export class MagicFunctions {
 
             return cy.get(selector).should(GET_OBJ.condition, GET_OBJ.condition_value)
         }
+    }
+
+    contiene(valor, accion) {
+        switch (accion) {
+            case this.accion.CHECK:
+                return cy.contains(valor).check()
+            case this.accion.CLICK:
+                return cy.contains(valor).click()
+            case this.accion.NO_EXISTE:
+                return cy.contains(valor).should(this.accion.NO_EXISTE)
+            default:
+                return cy.contains(valor)
+        }
+    }
+
+    pariente(objeto, valor) {
+        if (valor)
+            return objeto.parents(valor)
+        else
+            return objeto.parent()
+    }
+
+    debe(objeto, condicion, valor) {
+        if (objeto)
+            return objeto.should(condicion, valor)
+        else
+            return this.obj.should(condicion, valor)
+    }
+
+    encuentra(objeto, valor, accion) {
+        switch (accion) {
+            case this.accion.CHECK:
+                return objeto.find(valor).check()
+        }
+    }
+
+    tipo_objeto = {
+        LI: "li"
+    }
+
+    debe_objeto = {
+        TENER_CLASE: "have.class",
+        TENER_LONGITUD: "have.length",
+        TENER_TEXTO: "have.text",
+        NO_TENER_TEXTO: "not.have.text"
+    }
+
+    accion = {
+        CHECK: "check",
+        CLICK: "click",
+        NO_EXISTE: "not.exist"
+    }
+
+    imprime(valor) {
+        console.log(valor)
+    }
+
+    primero() {
+        this.obj = this.obj.first()
+        return this.obj.first()
+    }
+
+    obtener(valor) {
+        this.obj = cy.get(valor)
+        return cy.get(valor)
     }
 }

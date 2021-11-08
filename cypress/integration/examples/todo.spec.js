@@ -143,7 +143,7 @@ describe('example to-do app', () => {
     // In order to check the item, we'll find the <input> element for this <label>
     // by traversing up the dom to the parent element. From there, we can `find`
     // the child checkbox <input> element and use the `check` command to check it.
-    letget_obj = mf.GET_OBJ(
+    let get_obj = mf.GET_OBJ(
       mf.selector_type.CONTAINS,
       'Pay electric bill',
       [
@@ -167,9 +167,15 @@ describe('example to-do app', () => {
     // Again we'll use `contains` to find the <label> element and then use the `parents` command
     // to traverse multiple levels up the dom until we find the corresponding <li> element.
     // Once we get that element, we can assert that it has the completed class.
-    cy.contains('Pay electric bill')
-      .parents('li')
-      .should('have.class', 'completed')
+    //cy.contains('Pay electric bill')
+    //  .parents('li')
+    //  .should('have.class', 'completed')
+
+    mf.debe(mf.pariente(mf.contiene(
+      'Pay electric bill', null), 
+      mf.tipo_objeto.LI), 
+      mf.debe_objeto.TENER_CLASE, 
+      'completed')
   })
 
   context('with a checked task', () => {
@@ -178,40 +184,62 @@ describe('example to-do app', () => {
       // Since we want to perform multiple tests that start with checking
       // one element, we put it in the beforeEach hook
       // so that it runs at the start of every test.
-      cy.contains('Pay electric bill')
-        .parent()
-        .find('input[type=checkbox]')
-        .check()
+
+      mf.encuentra(mf.pariente(mf.contiene(
+        'Pay electric bill', null), 
+        null), 
+        'input[type=checkbox]', 
+        mf.accion.CHECK)
+
+      //cy.contains('Pay electric bill')
+      //  .parent()
+      //  .find('input[type=checkbox]')
+      //  .check()
     })
 
     it('can filter for uncompleted tasks', () => {
       // We'll click on the "active" button in order to
       // display only incomplete items
-      cy.contains('Active').click()
+      mf.contiene('Active', mf.accion.CLICK)
+      //cy.contains('Active').click()
 
       // After filtering, we can assert that there is only the one
       // incomplete item in the list.
-      cy.get('.todo-list li')
-        .should('have.length', 1)
-        .first()
-        .should('have.text', 'Walk the dog')
+
+      mf.obtener('.todo-list li')
+      mf.debe(null, mf.debe_objeto.TENER_LONGITUD, 1)
+      mf.primero()
+      mf.debe(null, mf.debe_objeto.TENER_TEXTO, 'Walk the dog')
+
+      //cy.get('.todo-list li')
+      //  .should('have.length', 1)
+      //  .first()
+      //  .should('have.text', 'Walk the dog')
 
       // For good measure, let's also assert that the task we checked off
       // does not exist on the page.
-      cy.contains('Pay electric bill').should('not.exist')
+      mf.contiene('Pay electric bill', mf.accion.NO_EXISTE)
+      //cy.contains('Pay electric bill').should('not.exist')
     })
 
     it('can filter for completed tasks', () => {
       // We can perform similar steps as the test above to ensure
       // that only completed tasks are shown
-      cy.contains('Completed').click()
+      mf.contiene('Completed', mf.accion.CLICK)
+      //cy.contains('Completed').click()
 
-      cy.get('.todo-list li')
-        .should('have.length', 1)
-        .first()
-        .should('have.text', 'Pay electric bill')
+      mf.obtener('.todo-list li')
+      mf.debe(null, mf.debe_objeto.TENER_LONGITUD, 1)
+      mf.primero()
+      mf.debe(null, mf.debe_objeto.TENER_TEXTO, 'Pay electric bill')
 
-      cy.contains('Walk the dog').should('not.exist')
+      //cy.get('.todo-list li')
+      //  .should('have.length', 1)
+      //  .first()
+      //  .should('have.text', 'Pay electric bill')
+
+      mf.contiene('Walk the dog', mf.accion.NO_EXISTE)
+      //cy.contains('Walk the dog').should('not.exist')
     })
 
     it('can delete all completed tasks', () => {
@@ -221,16 +249,23 @@ describe('example to-do app', () => {
       // This button only appears when at least one task is checked
       // so this command is implicitly verifying that it does exist.
       // Second, it selects the button so we can click it.
-      cy.contains('Clear completed').click()
+      mf.contiene('Clear completed', mf.accion.CLICK)
+      //cy.contains('Clear completed').click()
 
       // Then we can make sure that there is only one element
       // in the list and our element does not exist
-      cy.get('.todo-list li')
-        .should('have.length', 1)
-        .should('not.have.text', 'Pay electric bill')
+
+      mf.obtener('.todo-list li')
+      mf.debe(null, mf.debe_objeto.TENER_LONGITUD, 1)
+      mf.debe(null, mf.debe_objeto.NO_TENER_TEXTO, 'Pay electric bill')
+
+      //cy.get('.todo-list li')
+      //  .should('have.length', 1)
+      //  .should('not.have.text', 'Pay electric bill')
 
       // Finally, make sure that the clear button no longer exists.
-      cy.contains('Clear completed').should('not.exist')
+      mf.contiene('Clear completed', mf.accion.NO_EXISTE)
+      //cy.contains('Clear completed').should('not.exist')
     })
   })
 })
